@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reverse Click Order Animation</title>
+
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            height: 100vh;
+        }
+        .board {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .row:last-child {
+            margin-bottom: 0;
+        }
+        .tile {
+            width: 100px;
+            height: 100px;
+            border: 2px solid rgb(75, 127, 82);
+            cursor: pointer;
+        }
+        .highlighted {
+            background-color: rgb(75, 127, 82);
+        }
+    </style>
+</head>
+<body>
+    <section class="board">
+        <div class="row">
+            <div class="tile" id="1"></div>
+            <div class="tile" id="2"></div>
+            <div class="tile" id="3"></div>
+        </div>
+        <div class="row">
+            <div class="tile" id="4"></div>
+            <div class="tile" id="5"></div>
+            <div class="tile" id="6"></div>
+        </div>
+        <div class="row">
+            <div class="tile" id="7"></div>
+            <div class="tile" id="8"></div>
+            <div class="tile" id="9"></div>
+        </div>
+    </section>
+
+    <script>
+        const tiles = document.querySelectorAll('.tile');
+        const TILE_COUNT = 9;
+        const tilesHighlighted = [];
+        let highlighting = true;
+
+
+        tiles.forEach((el) => {
+            el.addEventListener('click', (e) => {
+                (highlighting && !e.target.classList.contains('highlighted')) ? highlightTile('highlighted', e.target) : null;
+                if (tilesHighlighted.length === TILE_COUNT) {
+                    highlighting = false
+                    reverseHighlighting()
+                }
+            })
+        })
+
+        function addSelector(selector, el) {
+            el.classList.add(selector)
+        }
+        function removeSelector(selector, el) {
+            el.classList.remove(selector)
+        }
+        function highlightTile(selector, el) {
+            addSelector(selector, el)
+            tilesHighlighted.push(el)
+        }
+        function reverseHighlighting(selector, el) {
+            let interval = setInterval(() => {
+                removeSelector('highlighted', tilesHighlighted[0])
+                tilesHighlighted.shift()
+                if (tilesHighlighted.length === 0) {
+                    clearInterval(interval)
+                    highlighting = true
+                }
+            }, 500)
+        }
+    </script>
+</body>
+</html>
